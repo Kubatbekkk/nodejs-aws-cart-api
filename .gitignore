@@ -43,3 +43,5 @@ lerna-debug.log*
 .cdk.staging
 cdk.out
 cdk.out/InfrastructureStack.assets.json
+task.md
+.env
