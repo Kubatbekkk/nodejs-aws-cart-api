@@ -1,3 +1,5 @@
+# vscode settings
+.vscode
 # compiled output
 /dist
 /node_modules
