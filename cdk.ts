@@ -3,6 +3,8 @@ import * as cdk from 'aws-cdk-lib';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
+import * as apiGateway from '@aws-cdk/aws-apigatewayv2-alpha';
+import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 
 export class CartApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -22,6 +24,23 @@ export class CartApiStack extends cdk.Stack {
         ],
       },
     });
+
+    const cartApi = new apiGateway.HttpApi(this, 'CartApi', {
+      corsPreflight: {
+        allowHeaders: ['*'],
+        allowOrigins: ['*'],
+        allowMethods: [apiGateway.CorsHttpMethod.ANY],
+      },
+    });
+
+    cartApi.addRoutes({
+      path: '/{proxy+}',
+      methods: [apiGateway.HttpMethod.ANY],
+      integration: new HttpLambdaIntegration(
+        'CartServiceProxyIntegration',
+        cartApiLambda,
+      ),
+    });
     // '/Users/cube/Desktop/nodejs-aws-cart-api/src/main_lambda.ts';
     new cdk.CfnOutput(this, 'LambdaFunctionName', {
       value: cartApiLambda.functionName,
@@ -30,6 +49,10 @@ export class CartApiStack extends cdk.Stack {
     // Output the Lambda function ARN
     new cdk.CfnOutput(this, 'LambdaFunctionARN', {
       value: cartApiLambda.functionArn,
+    });
+
+    new cdk.CfnOutput(this, 'CartApiUrl', {
+      value: cartApi.url ?? 'Something went wrong.',
     });
   }
 }
