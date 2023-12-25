@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
+import dbClient from '../../db';
 import { v4 } from 'uuid';
 
 import { User } from '../models';
@@ -9,20 +9,20 @@ export class UsersService {
   private readonly users: Record<string, User>;
 
   constructor() {
-    this.users = {}
+    this.users = {};
   }
 
-  findOne(userId: string): User {
-    return this.users[ userId ];
+  async findOne(userName: string): Promise<User> {
+    const user = await dbClient('users').where('name', userName).first();
+    return user;
   }
 
-  createOne({ name, password }: User): User {
-    const id = v4();
-    const newUser = { id: name || id, name, password };
-
-    this.users[ id ] = newUser;
+  async createOne({ name, password }: User): Promise<User> {
+    // const id = v4();
+    const newUser = (await dbClient('users')
+      .insert({ name, password })
+      .returning('*')) as unknown as User;
 
     return newUser;
   }
-
 }

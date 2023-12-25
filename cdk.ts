@@ -5,6 +5,9 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 import * as apiGateway from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class CartApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -15,13 +18,25 @@ export class CartApiStack extends cdk.Stack {
       functionName: 'CartService',
       entry: 'dist/main.js',
       bundling: {
-        // NOTE: Adjust the following 'externalModules' option based on your dependencies
         externalModules: [
           '@nestjs/websockets/socket-module',
           '@nestjs/microservices/microservices-module',
           '@nestjs/microservices',
-          // ... any other modules that should not be bundled
+          'better-sqlite3',
+          'mysql2',
+          'pg-query-stream',
+          'mysql',
+          'sqlite3',
+          'tedious',
+          'oracledb',
         ],
+      },
+      environment: {
+        PG_ENDPOINT: process.env.DB_ENDPOINT,
+        PG_PORT: process.env.DB_PORT,
+        PG_DB: process.env.DB_DB,
+        PG_DB_USER: process.env.DB_USER,
+        PG_PASSWORD: process.env.DB_PASSWORD,
       },
     });
 
@@ -41,12 +56,11 @@ export class CartApiStack extends cdk.Stack {
         cartApiLambda,
       ),
     });
-    // '/Users/cube/Desktop/nodejs-aws-cart-api/src/main_lambda.ts';
+
     new cdk.CfnOutput(this, 'LambdaFunctionName', {
       value: cartApiLambda.functionName,
     });
 
-    // Output the Lambda function ARN
     new cdk.CfnOutput(this, 'LambdaFunctionARN', {
       value: cartApiLambda.functionArn,
     });
