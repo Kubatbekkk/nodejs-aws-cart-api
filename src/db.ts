@@ -1,14 +1,17 @@
 import knex from 'knex';
-import 'dotenv/config';
+require('dotenv').config();
 
-const { DB_ENDPOINT, DB_PORT, DB_DB, DB_USER, DB_PASSWORD } = process.env;
+const { PG_ENDPOINT, PG_PORT, PG_DB, PG_USER, PG_PASSWORD } = process.env;
 
 const config = {
-  endpoint: DB_ENDPOINT,
-  port: Number(DB_PORT),
-  database: DB_DB,
-  user: DB_USER,
-  password: DB_PASSWORD,
+  host: PG_ENDPOINT,
+  port: Number(PG_PORT),
+  database: PG_DB,
+  user: PG_USER,
+  password: PG_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false, // Add this line to disable certificate authority checks
+  },
 };
 
 export default knex({

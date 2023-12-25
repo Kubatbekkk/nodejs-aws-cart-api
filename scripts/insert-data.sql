@@ -3,10 +3,7 @@ create extension if not exists "uuid-ossp";
 --users
 INSERT INTO users (name, email, password) VALUES
 ('John Doe', 'johndoe@test.com', 'test1234'),
-('Jane Smith', 'janesmith@test.com', 'test5678'),
-('Alice Johnson', 'alicejohnson@test.com', 'test9012'),
-('Bob Brown', 'bobbrown@test.com', 'test3456'),
-('Charlie Green', 'charliegreen@test.com', 'test7890');
+('Jane Smith', 'janesmith@test.com', 'test5678')
 
 --carts
 INSERT INTO carts (user_id, status)
@@ -30,7 +27,7 @@ SELECT
  users.id AS user_id,
  carts.id AS cart_id,
  '{"method": "credit_card", "amount": 9}'::jsonb AS payment,
- '{"address": "1 Main Av", "city": "Skokie", "zipcode": "72000"}'::jsonb AS delivery,
+ '{"address": "1 Main Av", "city": "Osh", "zipcode": "72000"}'::jsonb AS delivery,
  'This is a comment' AS comments,
  CASE WHEN random() < 0.4 THEN 'PAYED'::order_status ELSE 'OPEN'::order_status END AS status,
  floor(random() * 500 + 100) AS total

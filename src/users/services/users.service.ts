@@ -13,14 +13,14 @@ export class UsersService {
   }
 
   async findOne(userName: string): Promise<User> {
-    const user = await dbClient('users').where('name', userName).first();
+    const user = await dbClient('users').where('login', userName).first();
     return user;
   }
 
   async createOne({ name, password }: User): Promise<User> {
     // const id = v4();
     const newUser = (await dbClient('users')
-      .insert({ name, password })
+      .insert({ login: name, password })
       .returning('*')) as unknown as User;
 
     return newUser;

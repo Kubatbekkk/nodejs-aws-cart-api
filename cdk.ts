@@ -5,9 +5,8 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 import * as apiGateway from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
+require('dotenv').config();
 
 export class CartApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -17,6 +16,8 @@ export class CartApiStack extends cdk.Stack {
       runtime: Runtime.NODEJS_18_X,
       functionName: 'CartService',
       entry: 'dist/main.js',
+      timeout: cdk.Duration.seconds(15),
+
       bundling: {
         externalModules: [
           '@nestjs/websockets/socket-module',
@@ -31,12 +32,18 @@ export class CartApiStack extends cdk.Stack {
           'oracledb',
         ],
       },
+      initialPolicy: [
+        new PolicyStatement({
+          actions: ['rds-db:connect', 'rds-db:executeStatement'],
+          resources: ['*'],
+        }),
+      ],
       environment: {
-        PG_ENDPOINT: process.env.DB_ENDPOINT,
-        PG_PORT: process.env.DB_PORT,
-        PG_DB: process.env.DB_DB,
-        PG_DB_USER: process.env.DB_USER,
-        PG_PASSWORD: process.env.DB_PASSWORD,
+        PG_ENDPOINT: process.env.PG_ENDPOINT,
+        PG_PORT: process.env.PG_PORT,
+        PG_DB: process.env.PG_DB,
+        PG_USER: process.env.PG_USER,
+        PG_PASSWORD: process.env.PG_PASSWORD,
       },
     });
 
