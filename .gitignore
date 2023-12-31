@@ -1,3 +1,5 @@
+# vscode settings
+.vscode
 # compiled output
 /dist
 /node_modules
@@ -36,3 +38,10 @@ lerna-debug.log*
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+/cdk.out
+.cdk.staging
+cdk.out
+cdk.out/InfrastructureStack.assets.json
+task.md
+.env
