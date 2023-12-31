@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -10,6 +11,12 @@ module.exports = function (options) {
 
   return {
     ...options,
+    entry: './src/main.ts',
+    externals: [
+      nodeExternals({
+        allowlist: ['pg', '@nestjs/core', /^@nestjs\/core/],
+      }),
+    ],
     plugins: [
       ...options.plugins,
       new webpack.IgnorePlugin({
